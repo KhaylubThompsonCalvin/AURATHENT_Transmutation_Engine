@@ -1,0 +1,10 @@
+{
+  "alpha01": {
+    "wisdom": ["wisdom_root", "wisdom_blossom", "wisdom_crown"],
+    "honor": ["honor_path", "honor_test", "honor_oath"]
+  },
+  "defaults": {
+    "truth": ["truth_init", "truth_trial", "truth_forged"],
+    "compassion": ["compassion_spark", "compassion_wave", "compassion_flame"]
+  }
+}

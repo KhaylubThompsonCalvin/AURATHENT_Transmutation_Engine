@@ -1,0 +1,18 @@
+<!--
+  transmutation_log.html
+  ----------------------
+  Renders the history of symbolic transmutations for a user.
+  Expects a 'log' list in Jinja.
+-->
+<!DOCTYPE html>
+<html>
+<head><title>Transmutation Log</title></head>
+<body>
+  <h1>Transmutation History</h1>
+  <ul>
+    {% for entry in log %}
+      <li>[{{ entry.timestamp }}] {{ entry.summary }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

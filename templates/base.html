@@ -1,0 +1,41 @@
+<!--
+base.html
+---------
+Global layout for AURATHENT Transmutation Engine UI.
+
+Author: Khaylub Thompson-Calvin
+Purpose:
+    - Provides a consistent layout shell for all symbolic pages.
+    - Includes head meta, CSS links, and base script references.
+    - Uses Jinja2 templating: child templates extend this block structure.
+
+Blocks:
+    - title: Set the page title.
+    - content: Main content area.
+    - scripts: Page-specific JS.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AURATHENT Engine{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AURATHENT: Symbolic Transmutation Interface</h1>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ 2025 }} Khaylub Thompson-Calvin – All Symbolic Rights Reserved</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

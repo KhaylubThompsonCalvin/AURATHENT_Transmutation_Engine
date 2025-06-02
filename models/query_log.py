@@ -14,37 +14,43 @@ Purpose:
 """
 
 from datetime import datetime
+from typing import Union
 
-# In-memory structure for now; swap to Mongo/Postgres later
+# In-memory structure for now; to be upgraded to Mongo/Postgres later
 query_logs = {}
 
 
-def log_query(user_id, event_type, payload):
+def log_query(user_id: str, event_type: str, payload: dict) -> dict:
     """
     Stores a single symbolic query event.
 
-    Parameters:
+    Args:
         user_id (str): The user's unique identifier
         event_type (str): e.g., 'transmutation', 'emotion_log', 'class_trigger'
-        payload (dict): Context-specific data (emotion, virtue, aura, timestamp, etc.)
+        payload (dict): Context-specific data (emotion, virtue, aura, etc.)
+
+    Returns:
+        dict: The saved event structure
     """
     timestamp = datetime.utcnow().isoformat()
+    event = {
+        "event": event_type,
+        "timestamp": timestamp,
+        "details": payload
+    }
 
     if user_id not in query_logs:
         query_logs[user_id] = []
 
-    query_logs[user_id].append({
-        "event": event_type,
-        "timestamp": timestamp,
-        "details": payload
-    })
+    query_logs[user_id].append(event)
+    return event
 
 
-def get_logs(user_id):
+def get_logs(user_id: str) -> list:
     """
     Retrieves all logs associated with a user.
 
-    Parameters:
+    Args:
         user_id (str): The user's unique identifier
 
     Returns:
@@ -53,11 +59,11 @@ def get_logs(user_id):
     return query_logs.get(user_id, [])
 
 
-def export_logs(user_id):
+def export_logs(user_id: str) -> list:
     """
     Returns logs in a structured, printable format.
 
-    Parameters:
+    Args:
         user_id (str): The user's unique identifier
 
     Returns:
@@ -70,16 +76,13 @@ def export_logs(user_id):
     ]
 
 
-def log_event(module: str, detail: str) -> dict:
+def log_event(module: str, detail: Union[str, dict]) -> dict:
     """
-    Shim function used in other controllers to log general symbolic events.
+    Logs a general symbolic system event (not tied to user).
 
-    This is compatible with imports like:
-        from models.query_log import log_event
-
-    Parameters:
-        module (str): Name of the system module (e.g., 'virtue', 'emotion', 'logic')
-        detail (str): Human-readable or structured info (can be a dict or string)
+    Args:
+        module (str): Name of the system module (e.g., 'virtue', 'emotion', 'lapis_index')
+        detail (str | dict): Human-readable or structured info
 
     Returns:
         dict: The stored event object

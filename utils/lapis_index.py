@@ -11,6 +11,8 @@ Purpose:
     - Used in symbolic memory and perception milestones
 """
 
+from models.query_log import log_event
+
 def trigger_lapis_event(virtue, memory_tag=None):
     """
     Check if virtue aligns with symbolic 'lapis logic' insight triggers.
@@ -20,15 +22,24 @@ def trigger_lapis_event(virtue, memory_tag=None):
         memory_tag (str): Optional memory/context to strengthen the symbolic correlation.
 
     Returns:
-        bool: True if divine trigger threshold is reached.
+        dict: Details of whether lapis logic was triggered and why.
     """
 
     lapis_virtues = {"truth", "sacrifice", "wisdom", "insight", "reverence"}
     amplified_contexts = {"death", "destiny", "origin", "betrayal", "childhood"}
 
-    if virtue.lower() in lapis_virtues:
-        if memory_tag and memory_tag.lower() in amplified_contexts:
-            return True
-        return True
+    virtue_hit = virtue.lower() in lapis_virtues
+    memory_hit = memory_tag and memory_tag.lower() in amplified_contexts
 
-    return False
+    triggered = virtue_hit or (virtue_hit and memory_hit)
+
+    result = {
+        "triggered": triggered,
+        "virtue_match": virtue_hit,
+        "amplified_context": memory_hit,
+        "virtue": virtue,
+        "memory_tag": memory_tag or "none"
+    }
+
+    log_event("lapis_index", result)
+    return result

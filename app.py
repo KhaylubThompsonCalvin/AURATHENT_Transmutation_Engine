@@ -17,6 +17,7 @@ Purpose:
         • Memory anchoring
         • Humor analysis
         • Central logic routing
+        • Breath logging (this new endpoint)
         • (Optional) OpenAI agent services
     - Exposes a health-check endpoint.
     - Launches the aura-based symbolic routing gateway on configured port.
@@ -30,12 +31,15 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 
+# Import the breath_controller blueprint
+from controllers.breath_controller import breath_bp
+
 # Load environment variables from .env
 load_dotenv()
 
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------
 # Database connection setup
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------
 from database import (
     init_mongo,
     init_postgres_pool,
@@ -43,9 +47,9 @@ from database import (
     release_postgres_connection
 )
 
-# ------------------------------------------------------------------------------
-# Import controller blueprints
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------
+# Import other controller blueprints
+# ------------------------------------------------------------------
 from controllers.transmutation_controller import transmutation_bp
 from controllers.virtue_vessel_controller import virtue_vessel_bp
 from controllers.emotion_controller import emotion_bp
@@ -53,9 +57,9 @@ from controllers.memory_controller import memory_bp
 from controllers.humor_controller import humor_bp
 from controllers.logic_router import logic_bp
 
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------
 # Optional: OpenAI Blueprint
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------
 OPENAI_ENABLED = False
 try:
     from controllers.openai_controller import openai_bp
@@ -84,6 +88,9 @@ def create_app():
     app.register_blueprint(memory_bp, url_prefix="/api/memory")
     app.register_blueprint(humor_bp, url_prefix="/api/humor")
     app.register_blueprint(logic_bp, url_prefix="/api/logic")
+
+    # Register the breath blueprint at /api/breath
+    app.register_blueprint(breath_bp, url_prefix="/api/breath")
 
     if OPENAI_ENABLED:
         app.register_blueprint(openai_bp, url_prefix="/api/openai")
@@ -114,7 +121,3 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5001))
     print(f"[Flask] Launching on port {port}...")
     app.run(host="0.0.0.0", port=port, debug=True)
-
-
-
-

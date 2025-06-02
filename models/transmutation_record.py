@@ -4,7 +4,7 @@ transmutation_record.py
 Records finalized symbolic transmutations across sessions.
 
 Author: Khaylub Thompson-Calvin
-Date: 2025-05-25
+Date: 2025-05-31
 
 Purpose:
     - Store transmutation outcomes linked to user profiles
@@ -27,7 +27,7 @@ def record_transmutation(user_id, emotion, virtue, mana, aura_result, lapis_trig
         emotion (str): Triggering emotion
         virtue (str): Contributing virtue
         mana (float): Mana generated from the combination
-        aura_result (str): Symbolic class/state shift from processing
+        aura_result (dict): Full result from detect_aura_shift()
         lapis_triggered (bool): Whether a divine logic trigger was activated
 
     Returns:
@@ -41,7 +41,9 @@ def record_transmutation(user_id, emotion, virtue, mana, aura_result, lapis_trig
         "emotion": emotion,
         "virtue": virtue,
         "mana": round(float(mana), 2),
-        "aura_result": aura_result,
+        "aura_tier": aura_result.get("aura_tier"),
+        "class_shift": aura_result.get("evolved"),
+        "memory_reference": aura_result.get("memory_reference"),
         "lapis_triggered": lapis_triggered
     }
 
@@ -77,6 +79,6 @@ def summarize_transmutations(user_id):
     """
     history = get_transmutation_history(user_id)
     return [
-        f"{record['timestamp']} → {record['aura_result']} ({record['virtue']} + {record['emotion']})"
+        f"{record['timestamp']} → {record['aura_tier']} ({record['virtue']} + {record['emotion']})"
         for record in history
     ]
